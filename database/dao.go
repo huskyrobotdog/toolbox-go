@@ -3,11 +3,24 @@ package database
 import (
 	"errors"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/huskyrobotdog/toolbox-go/id"
 	"gorm.io/gorm"
 )
 
 var ErrAffectedIncorrect = errors.New("rows affected incorrect")
+
+func IsDuplicateEntry(err error) bool {
+	if errMySQL, ok := err.(*mysql.MySQLError); ok {
+		switch errMySQL.Number {
+		case 1062:
+			return true
+		default:
+			return false
+		}
+	}
+	return false
+}
 
 func IsNotFound(err error) bool {
 	return errors.Is(err, gorm.ErrRecordNotFound)
