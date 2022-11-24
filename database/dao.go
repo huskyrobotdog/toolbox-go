@@ -44,6 +44,9 @@ func Take[M any](db *gorm.DB, condition ...func(tx *gorm.DB)) (*M, error) {
 		condition[0](sql)
 	}
 	if err := sql.Take(&m).Error; err != nil {
+		if IsNotFound(err) {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &m, nil
@@ -52,6 +55,9 @@ func Take[M any](db *gorm.DB, condition ...func(tx *gorm.DB)) (*M, error) {
 func TakeByID[M any](db *gorm.DB, id id.ID) (*M, error) {
 	var m M
 	if err := db.Where("id=?", id).Take(&m).Error; err != nil {
+		if IsNotFound(err) {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &m, nil
