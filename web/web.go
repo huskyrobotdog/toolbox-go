@@ -60,6 +60,14 @@ type ContextData[D any] struct {
 	LoginID id.ID
 }
 
-func (curr ContextData[D]) Send(code *types.Code, data ...interface{}) {
+func (curr *ContextData[D]) Send(code *types.Code, data ...interface{}) {
 	Send(curr.Ctx, code, data...)
+}
+
+func (curr *ContextData[D]) RequestIP() string {
+	reqIP := curr.Ctx.ClientIP()
+	if reqIP == "::1" {
+		reqIP = "127.0.0.1"
+	}
+	return reqIP
 }
