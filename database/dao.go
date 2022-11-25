@@ -6,6 +6,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/huskyrobotdog/toolbox-go/id"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 var ErrAffectedIncorrect = errors.New("rows affected incorrect")
@@ -36,6 +37,10 @@ func CheckResult(result *gorm.DB, matchedRows ...int64) error {
 		}
 	}
 	return nil
+}
+
+func ForUpdate(db *gorm.DB) *gorm.DB {
+	return db.Clauses(clause.Locking{Strength: "UPDATE"})
 }
 
 func Find[M any](db *gorm.DB, condition ...func(tx *gorm.DB)) ([]M, error) {
