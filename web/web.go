@@ -103,3 +103,12 @@ func Assert(logic bool, code *types.Code) {
 func AssertWithMsg(logic bool, code *types.Code, msg string, v ...interface{}) {
 	assert(logic, code, &msg, v...)
 }
+
+func AssertWithError(logic bool, code *types.Code, err error) {
+	if err != nil {
+		_m := err.Error()
+		assert(logic, code, &_m)
+	} else {
+		assert(logic, code, nil)
+	}
+}
