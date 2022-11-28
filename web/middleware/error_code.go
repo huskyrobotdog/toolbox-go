@@ -14,9 +14,9 @@ func ErrorCode(c *gin.Context) {
 			switch e := err.(type) {
 			case *web.ErrorWrap:
 				if e.AttaMsg != nil {
-					log.Instance.WithOptions(zap.AddCallerSkip(3)).Warn(e.Code.Error(), zap.String("attaMsg", *e.AttaMsg))
+					log.Instance.WithOptions(zap.AddCallerSkip(4)).Warn(e.Code.Error(), zap.String("attaMsg", *e.AttaMsg))
 				} else {
-					log.Instance.WithOptions(zap.AddCallerSkip(3)).Warn(e.Code.Error())
+					log.Instance.WithOptions(zap.AddCallerSkip(4)).Warn(e.Code.Error())
 				}
 				web.Send(c, e.Code)
 			default:
