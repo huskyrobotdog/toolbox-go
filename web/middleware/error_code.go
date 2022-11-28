@@ -13,7 +13,11 @@ func ErrorCode(c *gin.Context) {
 		if err := recover(); err != nil {
 			switch e := err.(type) {
 			case *web.ErrorWrap:
-				log.Instance.WithOptions(zap.AddCallerSkip(3)).Warn(e.Code.Error(), zap.String("attaMsg", *e.AttaMsg))
+				if e.AttaMsg != nil {
+					log.Instance.WithOptions(zap.AddCallerSkip(3)).Warn(e.Code.Error(), zap.String("attaMsg", *e.AttaMsg))
+				} else {
+					log.Instance.WithOptions(zap.AddCallerSkip(3)).Warn(e.Code.Error())
+				}
 				web.Send(c, e.Code)
 			default:
 				log.Instance.WithOptions(zap.AddCallerSkip(1)).Error("unknown error", zap.Any("cause", err))
