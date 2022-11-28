@@ -3,6 +3,7 @@ package web
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -70,4 +71,35 @@ func (curr *ContextData[D]) RequestIP() string {
 		reqIP = "127.0.0.1"
 	}
 	return reqIP
+}
+
+type ErrorWrap struct {
+	Code    *types.Code
+	AttaMsg *string
+}
+
+func assert(logic bool, code *types.Code, msg *string, v ...interface{}) {
+	if logic {
+		return
+	}
+	if msg == nil {
+		panic(&ErrorWrap{
+			Code:    code,
+			AttaMsg: nil,
+		})
+	} else {
+		_m := fmt.Sprintf(*msg, v...)
+		panic(&ErrorWrap{
+			Code:    code,
+			AttaMsg: &_m,
+		})
+	}
+}
+
+func Assert(logic bool, code *types.Code) {
+	assert(logic, code, nil)
+}
+
+func AssertWithMsg(logic bool, code *types.Code, msg string, v ...interface{}) {
+	assert(logic, code, &msg, v...)
 }
